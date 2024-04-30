@@ -31,3 +31,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.text_24px {
+  @apply text-[15px] lg:text-[24px]  font-[700] md:font-[600];
+}

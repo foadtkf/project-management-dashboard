@@ -1,0 +1,15 @@
+import mongoose, { Schema } from "mongoose";
+
+const userSchema = new Schema({
+  email: {
+    required: [true, "Email field is required."],
+    type: Schema.Types.String,
+    unique: true,
+    trim: true,
+  },
+  password: {
+    type: Schema.Types.String,
+  },
+});
+
+export const User = mongoose.models.User || mongoose.model("User", userSchema);

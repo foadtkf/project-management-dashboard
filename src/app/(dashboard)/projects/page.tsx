@@ -1,9 +1,15 @@
+import PHBreadcrumbs from "@/components/ui/PHBreadcrumbs";
 import React from "react";
 
 type Props = {};
 
 const Projects = (props: Props) => {
-  return <div>List of Projects</div>;
+  const items = [{ label: "Projects" }];
+  return (
+    <div>
+      <PHBreadcrumbs items={items} />
+    </div>
+  );
 };
 
 export default Projects;
