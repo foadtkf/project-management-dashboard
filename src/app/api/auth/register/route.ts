@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       output.password = bcrypt.hashSync(output.password, salt);
       const userCreated = await User.create(output);
       return NextResponse.json(
-        { status: 200, message: "User created successfully" },
+        { status: 201, message: "User created successfully" },
         { status: 200 }
       );
     }
