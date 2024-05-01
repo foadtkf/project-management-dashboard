@@ -33,3 +33,9 @@ To run this project locally, follow these steps:
 3. Install dependencies: `npm install`
 4. Start the development server: `npm run dev`
 5. Open your web browser and visit `http://localhost:3000`
+
+## Sample credentials
+
+- email: mr@user2.com
+- password: 123456
+- live url: https://pmd-ruddy.vercel.app/
