@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 const Sidebar = () => {
   const { Sider } = Layout;
   const [collapsed, setCollapsed] = useState(false);
@@ -41,8 +42,26 @@ const Sidebar = () => {
       "2",
       <DesktopOutlined />
     ),
-    getItem(<Button onClick={() => signOut({ callbackUrl: "/login", redirect: true })}>Logout</Button>, "3"),
+    getItem(
+      <Button
+        block
+        danger
+        onClick={() => signOut({ callbackUrl: "/login", redirect: true })}
+      >
+        Logout
+      </Button>,
+      "3"
+    ),
   ];
+  const pathName = usePathname();
+  const urlAry = [
+    { key: "1", url: "/projects" },
+    { key: "2", url: "/add-project" },
+  ];
+  const defaultKey = urlAry.map((item) => item.url).includes(pathName)
+    ? urlAry.find((item) => item.url === pathName)?.key
+    : "1";
+
   return (
     <Sider
       collapsible
@@ -52,7 +71,7 @@ const Sidebar = () => {
       <div className="demo-logo-vertical" />
       <Menu
         theme="dark"
-        defaultSelectedKeys={["1"]}
+        defaultSelectedKeys={[defaultKey || "1"]}
         mode="inline"
         items={items}
       />

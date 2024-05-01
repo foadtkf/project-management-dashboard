@@ -28,6 +28,19 @@ export const addProject = async (requestBody: IProject) => {
   );
   return response.data as IProject;
 };
+export const updateProject = async (projectId: string, project: IProject) => {
+  const response = await axios.patch(
+    `${process.env.NEXT_PUBLIC_CANONICAL}/api/projects/${projectId}`,
+    project
+  );
+  return response.data as IProject;
+};
+export const deleteProject = async (projectId: string) => {
+  const response = await axios.delete(
+    `${process.env.NEXT_PUBLIC_CANONICAL}/api/projects/${projectId}`
+  );
+  return response.data as IProject;
+};
 
 export function useGetProjects() {
   return useQuery({

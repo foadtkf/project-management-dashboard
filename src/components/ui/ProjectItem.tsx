@@ -1,10 +1,12 @@
 "use client";
 import { IProject } from "@/types/types";
+import { useProjectsStore } from "@/zustand/store";
 import { Button, List, Popconfirm } from "antd";
 import { useRouter } from "next/navigation";
 
 export const ProjectItem = ({ project }: { project: IProject }) => {
-    const routeTo=useRouter();
+  const routeTo = useRouter();
+  const deleteProject = useProjectsStore((state) => state.deleteProject);
   return (
     <List.Item
       key={project._id}
@@ -28,9 +30,7 @@ export const ProjectItem = ({ project }: { project: IProject }) => {
         <Popconfirm
           key={Math.random()}
           title="Are you sure you want to delete?"
-          onConfirm={() => {
-            console.log("Deleted");
-          }}
+          onConfirm={() => deleteProject(project._id)}
         >
           <Button className="remove-todo-button" type="primary" danger>
             Delete

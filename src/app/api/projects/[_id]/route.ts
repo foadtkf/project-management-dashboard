@@ -20,7 +20,26 @@ export async function GET(
     );
   }
 }
-
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { _id: string } }
+) {
+  try {
+    const response = await Project.findOneAndDelete({ _id: params._id });
+    if (!response) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    }
+    return NextResponse.json(
+      { message: "Deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Error deleting projects" },
+      { status: 500 }
+    );
+  }
+}
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { _id: string } }

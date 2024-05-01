@@ -1,7 +1,7 @@
 "use client";
 import Form from "@/components/forms/Form";
 import FormInput from "@/components/forms/FormInput";
-import { Button } from "antd";
+import { Button, Divider } from "antd";
 import React, { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import FormTextArea from "@/components/forms/FormTextArea";
@@ -71,7 +71,7 @@ const AddProjectForm = () => {
         {tasks.map((t, index) => (
           <div className=" py-[15px]" key={`tasks-${index}`}>
             <div className="flex justify-between items-center">
-              <h2 className="text_20px">Task-{index + 1}</h2>
+              <Divider orientation="left">Task-{index + 1}</Divider>
               {index >= 1 && (
                 <div>
                   <MinusCircleOutlined
@@ -120,7 +120,7 @@ const AddProjectForm = () => {
           </div>
         ))}
         {recentActivities.map((r, index) => (
-          <div className="" key={`${index}`}>
+          <div className="pb-[15px]" key={`${index}`}>
             <div className="flex  w-full gap-2 pb-[10px]">
               <div className="flex-grow">
                 <FormInput

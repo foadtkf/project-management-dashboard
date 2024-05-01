@@ -42,7 +42,7 @@ const EditForm = ({ projectID }: { projectID: string }) => {
         name="name"
         rules={[{ required: true, message: "Please enter project name" }]}
       >
-        <Input />
+        <Input size="large" />
       </Form.Item>
 
       <Form.Item
@@ -50,7 +50,7 @@ const EditForm = ({ projectID }: { projectID: string }) => {
         name="teamMembers"
         rules={[{ required: true, message: "Please select team members" }]}
       >
-        <Select mode="multiple" placeholder="Select team members">
+        <Select size="large" mode="multiple" placeholder="Select team members">
           {teamMembers.map((member) => (
             <Option key={member._id} value={member._id}>
               {member.email}
@@ -67,7 +67,7 @@ const EditForm = ({ projectID }: { projectID: string }) => {
             name={["tasks", index, "title"]}
             rules={[{ required: true, message: "Please enter task title" }]}
           >
-            <Input />
+            <Input size="large" />
           </Form.Item>
           <Form.Item
             label={`Description`}
@@ -81,7 +81,7 @@ const EditForm = ({ projectID }: { projectID: string }) => {
             name={["tasks", index, "assignedTo"]}
             rules={[{ required: true, message: "Please select assignee" }]}
           >
-            <Select placeholder="Select assignee">
+            <Select size="large" placeholder="Select assignee">
               {teamMembers.map((member) => (
                 <Option key={member._id} value={member._id}>
                   {member.email}
@@ -94,7 +94,7 @@ const EditForm = ({ projectID }: { projectID: string }) => {
             name={["tasks", index, "status"]}
             rules={[{ required: true, message: "Please select status" }]}
           >
-            <Select placeholder="Select status">
+            <Select size="large" placeholder="Select status">
               <Option value="To Do">To Do</Option>
               <Option value="In Progress">In Progress</Option>
               <Option value="Done">Done</Option>
