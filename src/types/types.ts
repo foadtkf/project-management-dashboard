@@ -6,6 +6,10 @@ export interface IProject {
   tasks: ITask[];
   recentActivities?: string[];
 }
+export interface IUser {
+  _id: string;
+  email: string;
+}
 export interface TeamMember {
   email: string;
 }

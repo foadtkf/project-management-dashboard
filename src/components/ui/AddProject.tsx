@@ -2,68 +2,159 @@
 import Form from "@/components/forms/Form";
 import FormInput from "@/components/forms/FormInput";
 import { Button } from "antd";
-import axios from "axios";
-import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
+import FormTextArea from "@/components/forms/FormTextArea";
+import FormMultiSelectField from "../forms/FormMultiSelectField";
+import { useGetUsers } from "@/actions/actions";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import FormSelectInput from "../forms/FormSelectInput";
+import FormDatePicker from "../forms/FormDatePicker";
+import { useProjectsStore } from "@/zustand/store";
 
 interface IFormInputs {
-  email: string;
-  password: string;
+  name: string;
+  description: string;
 }
 
-const AddProject = () => {
-  const [emailerror, setEmailError] = useState(undefined);
-  const [passworderror, setPasswordError] = useState(undefined);
+const AddProjectForm = () => {
+  const [tasks, setTasks] = useState<string[]>([""]);
+  const [recentActivities, setRecentActivities] = useState<string[]>([""]);
+  const addProject = useProjectsStore((state) => state.addProject);
+  const { data, isLoading, isError } = useGetUsers();
+  const userOptions = data?.map((user) => ({
+    label: user.email,
+    value: user._id,
+  }));
+
+  const handleAddTasks = (type: string) => {
+    switch (type) {
+      case "tasks":
+        setTasks([...tasks, ""]);
+        break;
+      case "recentActivities":
+        setRecentActivities([...recentActivities, ""]);
+        break;
+      default:
+        break;
+    }
+  };
+  const handleRemoveTasks = (index: number, type: string) => {
+    switch (type) {
+      case "tasks":
+        setTasks(tasks.filter((_, i) => i !== index));
+        break;
+      case "recentActivities":
+        setRecentActivities(recentActivities.filter((_, i) => i !== index));
+        break;
+      default:
+        break;
+    }
+  };
   const onSubmit: SubmitHandler<IFormInputs> = async (data: any) => {
-    axios
-      .post("/api/auth/login", data)
-      .then((res) => {
-        const response = res.data;
-        if (response.status == 200) {
-          signIn("credentials", {
-            email: data.email,
-            password: data.password,
-            callbackUrl: "/",
-            redirect: true,
-          });
-        } else if (response.status == 400) {
-          if (response.errors.email) setEmailError(response.errors.email);
-          if (response.errors.password)
-            setPasswordError(response.errors.password);
-        }
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+    addProject(data);
   };
   return (
     <div>
-      <h1 className="text_24px pb-[15px]">Login</h1>
+      <h1 className="text_24px pb-[15px]">Add A New Project</h1>
       <Form submitHandler={onSubmit}>
         <div>
-          <FormInput
-            name="email"
-            label="Email"
-            size="large"
-            errorMessage={emailerror}
-          />
+          <FormInput name="name" label="Project Name" size="large" />
         </div>
         <div className="py-[15px]">
-          <FormInput
-            name="password"
-            label="Password"
-            size="large"
-            type="password"
-            errorMessage={passworderror}
+          <FormTextArea name="description" label="Description" rows={4} />
+        </div>
+        <div className="py-[15px]">
+          <FormMultiSelectField
+            label="Team Members"
+            name="teamMembers"
+            placeholder="Select Members"
+            options={userOptions!}
           />
         </div>
+        {tasks.map((t, index) => (
+          <div className=" py-[15px]" key={`tasks-${index}`}>
+            <div className="flex justify-between items-center">
+              <h2 className="text_20px">Task-{index + 1}</h2>
+              {index >= 1 && (
+                <div>
+                  <MinusCircleOutlined
+                    className="dynamic-delete-button text-lg"
+                    onClick={() => handleRemoveTasks(index, "tasks")}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex  w-full gap-2 pb-[10px]">
+              <div className="flex-grow">
+                <FormInput
+                  name={`tasks[${index}].title`}
+                  label={`Title`}
+                  size="large"
+                />
+                <FormSelectInput
+                  options={userOptions!}
+                  name={`tasks[${index}].assignedTo`}
+                  label="Assigned To"
+                />
+                <FormSelectInput
+                  options={[
+                    { label: "To Do", value: "To Do" },
+                    { label: "In Progress", value: "In Progress" },
+                    { label: "Done", value: "Done" },
+                  ]}
+                  name={`tasks[${index}].status`}
+                  label="Status"
+                />
+                <FormDatePicker
+                  name={`tasks[${index}].deadline`}
+                  label={`Deadline`}
+                  size="large"
+                />
+                <FormTextArea
+                  name={`tasks[${index}].description`}
+                  label={`Description`}
+                  rows={4}
+                />
+              </div>
+            </div>
+            {index === tasks.length - 1 && (
+              <Button onClick={() => handleAddTasks("tasks")}>Add More</Button>
+            )}
+          </div>
+        ))}
+        {recentActivities.map((r, index) => (
+          <div className="" key={`${index}`}>
+            <div className="flex  w-full gap-2 pb-[10px]">
+              <div className="flex-grow">
+                <FormInput
+                  name={`recentActivities[${index}]`}
+                  label={`Recent Activity- ${index + 1}`}
+                  size="large"
+                />
+              </div>
+              {index >= 1 && (
+                <div>
+                  <MinusCircleOutlined
+                    className="dynamic-delete-button text-lg"
+                    onClick={() => handleRemoveTasks(index, "recentActivities")}
+                  />
+                </div>
+              )}
+            </div>
+            {index === tasks.length - 1 && (
+              <Button onClick={() => handleAddTasks("recentActivities")}>
+                Add More
+              </Button>
+            )}
+          </div>
+        ))}
         <Button type="primary" htmlType="submit">
-          Login
+          Add Project
         </Button>
       </Form>
     </div>
   );
 };
 
-export default AddProject;
+export default AddProjectForm;

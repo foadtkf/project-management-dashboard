@@ -10,6 +10,7 @@ export interface IState {
 export interface IActions {
   updateTask: (draggedTask: string, status: IStatus, projectId: string) => void;
   dragTask: (id: string | null) => void;
+  addProject:(project:IProject)=>void;
 }
 export const useProjectsStore = create<IState & IActions>()(
   persist(
@@ -26,6 +27,11 @@ export const useProjectsStore = create<IState & IActions>()(
             (t) => t.title === draggedTask
           );
           state.projects[projectIndex].tasks[taskIndex].status = status;
+          return { projects: state.projects };
+        }),
+      addProject: (project: IProject) =>
+        set((state) => {
+          state.projects.push(project);
           return { projects: state.projects };
         }),
     }),
@@ -46,4 +52,3 @@ export const useProjects = () => {
 
   return { projects: data as IProject[], isLoading, isError };
 };
- 
