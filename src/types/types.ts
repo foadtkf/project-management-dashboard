@@ -11,6 +11,7 @@ export interface IUser {
   email: string;
 }
 export interface TeamMember {
+  _id:string;
   email: string;
 }
 export interface ITask {

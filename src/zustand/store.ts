@@ -10,7 +10,8 @@ export interface IState {
 export interface IActions {
   updateTask: (draggedTask: string, status: IStatus, projectId: string) => void;
   dragTask: (id: string | null) => void;
-  addProject:(project:IProject)=>void;
+  addProject: (project: IProject) => void;
+  updateProject: (project: IProject, projectID: string) => void;
 }
 export const useProjectsStore = create<IState & IActions>()(
   persist(
@@ -18,6 +19,14 @@ export const useProjectsStore = create<IState & IActions>()(
       projects: [] as IProject[],
       draggedTask: null,
       dragTask: (id: string | null) => set({ draggedTask: id }),
+      updateProject: (project: IProject, projectID: string) =>
+        set((state) => {
+          const projectIndex = state.projects.findIndex(
+            (p) => p._id === projectID
+          );
+          state.projects[projectIndex] = project;
+          return { projects: state.projects };
+        }),
       updateTask: (draggedTask: string, status: IStatus, projectId: string) =>
         set((state) => {
           const projectIndex = state.projects.findIndex(

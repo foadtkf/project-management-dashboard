@@ -1,190 +1,123 @@
 "use client";
-import Form from "@/components/forms/Form";
-import FormInput from "@/components/forms/FormInput";
-import { Button } from "antd";
-import React, { useState } from "react";
-import { SubmitHandler } from "react-hook-form";
-import FormTextArea from "@/components/forms/FormTextArea";
-import FormMultiSelectField from "../forms/FormMultiSelectField";
-import { useGetUsers } from "@/actions/actions";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import FormSelectInput from "../forms/FormSelectInput";
-import FormDatePicker from "../forms/FormDatePicker";
-import { useProjects, useProjectsStore } from "@/zustand/store";
-import { IProject } from "@/types/types";
+import { IProject, TeamMember } from "@/types/types";
+import { useProjects } from "@/zustand/store";
+import { Form, Input, DatePicker, Select, Button, Divider } from "antd";
+import { useEffect, useState } from "react";
+import { useProjectsStore } from "@/zustand/store";
 
-const EditProjectForm = ({ projectID }: { projectID: string }) => {
+const { Option } = Select;
+
+const EditForm = ({ projectID }: { projectID: string }) => {
   const { projects } = useProjects();
-  const projectData = projects.find((p) => p._id === projectID);
-  const [tasks, setTasks] = useState<string[]>(
-    projectData ? projectData.tasks.map((t) => t.title) : [""]
-  );
+  const updateProject = useProjectsStore((state) => state.updateProject);
+  const initialValues = projects.find((p) => p._id === projectID);
+  const [form] = Form.useForm();
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
-  const [recentActivities, setRecentActivities] = useState<string[]>(
-    projectData?.recentActivities
-      ? projectData.recentActivities.map((t) => t)
-      : [""]
-  );
-  const addProject = useProjectsStore((state) => state.addProject);
-  const { data, isLoading, isError } = useGetUsers();
-  const userOptions = data?.map((user) => ({
-    label: user.email,
-    value: user._id,
-  }));
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+    const fetchTeamMembers = async () => {
+      try {
+        setTeamMembers(initialValues?.teamMembers || []);
+      } catch (error) {
+        console.error("Error fetching team members:", error);
+      }
+    };
+    fetchTeamMembers();
+  }, [form, initialValues]);
 
-  const handleAddTasks = (type: string) => {
-    switch (type) {
-      case "tasks":
-        setTasks([...tasks, ""]);
-        break;
-      case "recentActivities":
-        setRecentActivities([...recentActivities, ""]);
-        break;
-      default:
-        break;
-    }
+  const onFinish = (values: IProject) => {
+    updateProject(values, projectID);
   };
-  const handleRemoveTasks = (index: number, type: string) => {
-    switch (type) {
-      case "tasks":
-        setTasks(tasks.filter((_, i) => i !== index));
-        break;
-      case "recentActivities":
-        setRecentActivities(recentActivities.filter((_, i) => i !== index));
-        break;
-      default:
-        break;
-    }
-  };
-  const onSubmit: SubmitHandler<IProject> = async (data: any) => {
-    addProject(data);
-  };
+
   return (
-    <div>
-      <h1 className="text_24px pb-[15px]">Add A New Project</h1>
-      {projectData && (
-        <Form submitHandler={onSubmit}>
-          <div>
-            <FormInput
-              value={projectData.name}
-              name="name"
-              label="Project Name"
-              size="large"
-            />
-          </div>
-          <div className="py-[15px]">
-            <FormTextArea
-              value={projectData.description}
-              name="description"
-              label="Description"
-              rows={4}
-            />
-          </div>
-          <div className="py-[15px]">
-            <FormMultiSelectField
-              value={projectData.teamMembers?projectData.teamMembers.map((t) => t.email):[""]}
-              label="Team Members"
-              name="teamMembers"
-              placeholder="Select Members"
-              options={userOptions!}
-            />
-          </div>
-          {tasks.map((t, index) => (
-            <div className=" py-[15px]" key={`tasks-${index}`}>
-              <div className="flex justify-between items-center">
-                <h2 className="text_20px">Task-{index + 1}</h2>
-                {index >= 1 && (
-                  <div>
-                    <MinusCircleOutlined
-                      className="dynamic-delete-button text-lg"
-                      onClick={() => handleRemoveTasks(index, "tasks")}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="flex  w-full gap-2 pb-[10px]">
-                <div className="flex-grow">
-                  <FormInput
-                    value={projectData.tasks[index].title}
-                    name={`tasks[${index}].title`}
-                    label={`Title`}
-                    size="large"
-                  />
-                  <FormSelectInput
-                    value={projectData.tasks[index].assignedTo.email}
-                    options={userOptions!}
-                    name={`tasks[${index}].assignedTo`}
-                    label="Assigned To"
-                  />
-                  <FormSelectInput
-                    options={[
-                      { label: "To Do", value: "To Do" },
-                      { label: "In Progress", value: "In Progress" },
-                      { label: "Done", value: "Done" },
-                    ]}
-                    name={`tasks[${index}].status`}
-                    label="Status"
-                  />
-                  <FormDatePicker
-                    name={`tasks[${index}].deadline`}
-                    label={`Deadline`}
-                    size="large"
-                  />
-                  <FormTextArea
-                    value={projectData.tasks[index].description}
-                    name={`tasks[${index}].description`}
-                    label={`Description`}
-                    rows={4}
-                  />
-                </div>
-              </div>
-              {index === tasks.length - 1 && (
-                <Button onClick={() => handleAddTasks("tasks")}>
-                  Add More
-                </Button>
-              )}
-            </div>
+    <Form
+      form={form}
+      initialValues={initialValues}
+      onFinish={onFinish}
+      layout="vertical"
+    >
+      <Form.Item
+        label="Project Name"
+        name="name"
+        rules={[{ required: true, message: "Please enter project name" }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label="Team Members"
+        name="teamMembers"
+        rules={[{ required: true, message: "Please select team members" }]}
+      >
+        <Select mode="multiple" placeholder="Select team members">
+          {teamMembers.map((member) => (
+            <Option key={member._id} value={member._id}>
+              {member.email}
+            </Option>
           ))}
-          {recentActivities.map((r, index) => (
-            <div className="" key={`${index}`}>
-              <div className="flex  w-full gap-2 pb-[10px]">
-                <div className="flex-grow">
-                  <FormInput
-                    value={
-                      projectData.recentActivities
-                        ? projectData?.recentActivities[index]
-                        : ""
-                    }
-                    name={`recentActivities[${index}]`}
-                    label={`Recent Activity- ${index + 1}`}
-                    size="large"
-                  />
-                </div>
-                {index >= 1 && (
-                  <div>
-                    <MinusCircleOutlined
-                      className="dynamic-delete-button text-lg"
-                      onClick={() =>
-                        handleRemoveTasks(index, "recentActivities")
-                      }
-                    />
-                  </div>
-                )}
-              </div>
-              {index === tasks.length - 1 && (
-                <Button onClick={() => handleAddTasks("recentActivities")}>
-                  Add More
-                </Button>
-              )}
-            </div>
-          ))}
-          <Button type="primary" htmlType="submit">
-            Add Project
-          </Button>
-        </Form>
-      )}
-    </div>
+        </Select>
+      </Form.Item>
+
+      <Divider orientation="left">Tasks</Divider>
+      {initialValues?.tasks.map((task, index) => (
+        <div key={index}>
+          <Form.Item
+            label={`Task ${index + 1}`}
+            name={["tasks", index, "title"]}
+            rules={[{ required: true, message: "Please enter task title" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label={`Description`}
+            name={["tasks", index, "description"]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+
+          <Form.Item
+            label={`Assigned To`}
+            name={["tasks", index, "assignedTo"]}
+            rules={[{ required: true, message: "Please select assignee" }]}
+          >
+            <Select placeholder="Select assignee">
+              {teamMembers.map((member) => (
+                <Option key={member._id} value={member._id}>
+                  {member.email}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={`Status`}
+            name={["tasks", index, "status"]}
+            rules={[{ required: true, message: "Please select status" }]}
+          >
+            <Select placeholder="Select status">
+              <Option value="To Do">To Do</Option>
+              <Option value="In Progress">In Progress</Option>
+              <Option value="Done">Done</Option>
+            </Select>
+          </Form.Item>
+        </div>
+      ))}
+
+      <Form.Item
+        label="Recent Activities"
+        name="recentActivities"
+        rules={[{ required: true, message: "Please enter recent activities" }]}
+      >
+        <Input.TextArea rows={4} />
+      </Form.Item>
+
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Save
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 
-export default EditProjectForm;
+export default EditForm;
