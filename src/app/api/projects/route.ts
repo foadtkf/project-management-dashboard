@@ -11,7 +11,15 @@ export const dynamic = "force-dynamic";
 connect();
 export async function GET(req: NextRequest) {
   try {
-    const response = await Project.find();
+    const response = await Project.find()
+      .populate({
+        path: "teamMembers",
+        select: "email",
+      })
+      .populate({
+        path: "tasks.assignedTo",
+        select: "email",
+      });
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {

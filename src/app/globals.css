@@ -33,5 +33,12 @@ body {
 }
 
 .text_24px {
-  @apply text-[15px] lg:text-[24px]  font-[700] md:font-[600];
+  @apply text-[20px] lg:text-[24px]  font-[700] md:font-[600];
+}
+
+.text_15px {
+  @apply text-[10px] lg:text-[15px];
+}
+.text_20px {
+  @apply text-[15px] lg:text-[20px]  font-[500] md:font-[400];
 }

@@ -11,7 +11,7 @@ export async function GET(
   { params }: { params: { _id: string } }
 ) {
   try {
-    const response = await Project.find({ _id: params._id });
+    const response = await Project.findOne({ _id: params._id });
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     return NextResponse.json(

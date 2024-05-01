@@ -6,7 +6,6 @@ import axios from "axios";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
-import { useMutation } from "react-query";
 
 interface IFormInputs {
   email: string;
