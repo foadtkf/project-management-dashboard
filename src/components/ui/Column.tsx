@@ -1,7 +1,7 @@
 "use client";
 
 import { IStatus, ITask } from "@/types/types";
-import { useProjectsStore } from "@/zustand/store";
+import { useProjects, useProjectsStore } from "@/zustand/store";
 import { useEffect, useMemo } from "react";
 import Task from "./Task";
 
@@ -14,10 +14,9 @@ export default function Column({
   status: IStatus;
   projectID: string;
 }) {
-  const CurProject = useProjectsStore(
-    (state) => state.projects.filter((project) => project._id === projectID)[0]
-  );
-  const tasks = CurProject.tasks;
+  const { projects, isLoading, isError } = useProjects();
+  const CurProject = projects.find((p) => p._id === projectID);
+  const tasks = CurProject?.tasks || [];
   const draggedTask = useProjectsStore((state) => state.draggedTask);
   const filteredTasks = useMemo(
     () => tasks.filter((task) => task.status === status),
@@ -27,18 +26,18 @@ export default function Column({
   const updateTask = useProjectsStore((state) => state.updateTask);
   const dragTask = useProjectsStore((state) => state.dragTask);
 
-  useEffect(() => {
-    useProjectsStore.persist.rehydrate();
-  }, []);
-
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     if (!draggedTask) return;
     updateTask(draggedTask, status, projectID);
     dragTask(null);
   };
 
+  useEffect(() => {
+    useProjectsStore.persist.rehydrate();
+  }, []);
+
   return (
-    <section className="h-[600px] flex-1">
+    <section className="h-[300px] flex-1">
       <h2 className="text_20px">{title}</h2>
 
       <div

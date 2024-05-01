@@ -1,13 +1,15 @@
 "use client";
 
 import { ITask } from "@/types/types";
-import { useProjectById, useProjectsStore } from "@/zustand/store";
+import { useProjects, useProjectsStore } from "@/zustand/store";
 import { Col, Row, Skeleton, Timeline } from "antd";
 import Task from "./Task";
 import TaskColumns from "./Columns";
 
-const ProjectDetail = ({ projectID }: { projectID: string }) => {
-  const projectData = useProjectById(projectID);
+const ProjectDetail = ({ projectID }: { projectID: string }) => { 
+
+  const { projects, isLoading, isError } = useProjects();
+  const projectData = projects.find((p) => p._id === projectID);
   return (
     <div>
       {projectData ? (

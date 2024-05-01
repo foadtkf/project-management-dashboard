@@ -9,6 +9,7 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import Link from "next/link";
 const Sidebar = () => {
   const { Sider } = Layout;
   const [collapsed, setCollapsed] = useState(false);
@@ -29,8 +30,12 @@ const Sidebar = () => {
   }
 
   const items: MenuItem[] = [
-    getItem("Projects", "1", <PieChartOutlined />),
-    getItem("Add Projects", "2", <DesktopOutlined />),
+    getItem(
+      <Link href={`/projects`}>Projects</Link>,
+      "1",
+      <PieChartOutlined />
+    ),
+    getItem(<Link href={`/add-project`}>Add Projects</Link>, "2", <DesktopOutlined />),
   ];
   return (
     <Sider

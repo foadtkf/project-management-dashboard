@@ -46,12 +46,4 @@ export const useProjects = () => {
 
   return { projects: data as IProject[], isLoading, isError };
 };
-
-export const useProjectById = (projectId: string) => {
-  const projects = useProjectsStore((state) => state.projects);
-  console.log(projects, projectId);
-  const project = projects.find(
-    (project: IProject) => project._id === projectId
-  );
-  return project;
-};
+ 

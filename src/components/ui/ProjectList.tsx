@@ -6,7 +6,7 @@ import React from "react";
 import { ProjectItem } from "./ProjectItem";
 
 const ProjectList = () => {
-  const { projects, isLoading, isError } = useProjects();
+  const { projects  } = useProjects();
   return (
     <List
       locale={{

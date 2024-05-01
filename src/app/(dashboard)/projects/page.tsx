@@ -7,7 +7,7 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 import { Metadata } from "next";
-
+export const dynamic = "force-dynamic";
 type Props = {};
 
 const Projects = async (props: Props) => {
@@ -29,7 +29,7 @@ const Projects = async (props: Props) => {
 
 export default Projects;
 
-export async function generateMetadata( ): Promise<Metadata> { 
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Project List`,
     description: `This page provides a list of all projects.`,

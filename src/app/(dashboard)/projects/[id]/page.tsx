@@ -18,17 +18,11 @@ type Props = {
 
 const SingleProject = async (props: Props) => {
   const items = [{ label: "Projects", link: "/projects" }, { label: "Info" }];
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["projects"],
-    queryFn: () => fetchSingleProject(props.params.id),
-  });
+
   return (
     <div className="p-[5%]">
       <PHBreadcrumbs items={items} />
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectDetail projectID={props.params.id} />
-      </HydrationBoundary>
+      <ProjectDetail projectID={props.params.id} />
     </div>
   );
 };
