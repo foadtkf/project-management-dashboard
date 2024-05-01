@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Layout, Menu } from "antd";
+import { Button, Layout, Menu } from "antd";
 import type { MenuProps } from "antd";
 import {
   DesktopOutlined,
@@ -10,6 +10,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 const Sidebar = () => {
   const { Sider } = Layout;
   const [collapsed, setCollapsed] = useState(false);
@@ -35,7 +36,12 @@ const Sidebar = () => {
       "1",
       <PieChartOutlined />
     ),
-    getItem(<Link href={`/add-project`}>Add Projects</Link>, "2", <DesktopOutlined />),
+    getItem(
+      <Link href={`/add-project`}>Add Projects</Link>,
+      "2",
+      <DesktopOutlined />
+    ),
+    getItem(<Button onClick={() => signOut({ callbackUrl: "/login", redirect: true })}>Logout</Button>, "3"),
   ];
   return (
     <Sider

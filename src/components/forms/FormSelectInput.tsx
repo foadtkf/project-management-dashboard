@@ -39,6 +39,7 @@ const FormSelectInput = ({
         name={name}
         render={({ field: { value, onChange } }) => (
           <Select
+            defaultValue={defaultValue}
             onChange={handleChange ? handleChange : onChange}
             size={size}
             options={options}

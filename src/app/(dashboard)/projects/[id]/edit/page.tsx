@@ -1,3 +1,4 @@
+import EditProjectForm from "@/components/ui/EditProject";
 import React from "react";
 
 type Props = {
@@ -8,7 +9,12 @@ type Props = {
 };
 
 const SingleProject = (props: Props) => {
-  return <div>EditProject: {props.params.id}</div>;
+  return (
+    <div className="p-[5%]">
+      {" "}
+      <EditProjectForm projectID={props.params.id} />
+    </div>
+  );
 };
 
 export default SingleProject;

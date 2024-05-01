@@ -11,11 +11,7 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import FormSelectInput from "../forms/FormSelectInput";
 import FormDatePicker from "../forms/FormDatePicker";
 import { useProjectsStore } from "@/zustand/store";
-
-interface IFormInputs {
-  name: string;
-  description: string;
-}
+import { IProject } from "@/types/types";
 
 const AddProjectForm = () => {
   const [tasks, setTasks] = useState<string[]>([""]);
@@ -51,7 +47,7 @@ const AddProjectForm = () => {
         break;
     }
   };
-  const onSubmit: SubmitHandler<IFormInputs> = async (data: any) => {
+  const onSubmit: SubmitHandler<IProject> = async (data: any) => {
     addProject(data);
   };
   return (
